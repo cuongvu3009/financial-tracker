@@ -4,7 +4,7 @@ import { projectAuth } from '../firebaseConfig';
 
 export const useSignin = () => {
   const [error, setError] = useState(null);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const { dispatch } = useAuthContext();
 
   const signin = async (email, password) => {
@@ -12,9 +12,11 @@ export const useSignin = () => {
     setIsPending(true);
 
     try {
+      //	login
       const res = await projectAuth.signInWithEmailAndPassword(email, password);
-      console.log(res.user);
-      await dispatch({ type: 'LOGIN' });
+
+      //	dispatch login action
+      await dispatch({ type: 'LOGIN', payload: res.user });
       setError(null);
       setIsPending(false);
     } catch (error) {

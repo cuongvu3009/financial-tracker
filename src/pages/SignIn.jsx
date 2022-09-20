@@ -3,16 +3,19 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useSignin } from '../hooks/useSignin';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signin, error, isPending } = useSignin();
+  const { dispatch } = useAuthContext();
 
   const handleLogin = (e) => {
     e.preventDefault();
     try {
       signin(email, password);
+      dispatch({ type: 'LOGIN' });
       setEmail('');
       setPassword('');
     } catch (error) {
@@ -37,8 +40,10 @@ const SignIn = () => {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />
-        <Button type='submit'>Login</Button>
+        {!isPending && <Button type='submit'>Login</Button>}
+        {isPending && <Button disabled>Loading...</Button>}
       </Form>
+      {error && <p>{error}</p>}
       <p>
         Not a member yet? <Link to='/signup'>Sign Up</Link>
       </p>
