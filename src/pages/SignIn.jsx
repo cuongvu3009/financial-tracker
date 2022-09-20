@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useLogin } from '../hooks/useSignin';
 import { useNavigate } from 'react-router-dom';
+import { useSignin } from '../hooks/useSignin';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, isPending, error } = useLogin();
-  const navigate = useNavigate();
+  const { signin, error, isPending } = useSignin();
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    login(email, password);
-    setEmail('');
-    setPassword('');
-
-    navigate('/');
-    console.log('Sign In succesfully!');
+    try {
+      signin(email, password);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <Wrapper>
       <h2>Login</h2>
-      {error && <p>{error}</p>}
 
-      <Form>
+      <Form onSubmit={handleLogin}>
         <label htmlFor=''>Email:</label>
         <input
           type='email'
@@ -37,8 +37,7 @@ const SignIn = () => {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />
-        {!isPending && <Button onClick={handleSubmit}>Login</Button>}
-        {isPending && <Button disabled>Loading...</Button>}
+        <Button type='submit'>Login</Button>
       </Form>
       <p>
         Not a member yet? <Link to='/signup'>Sign Up</Link>

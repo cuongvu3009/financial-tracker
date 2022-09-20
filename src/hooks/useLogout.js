@@ -1,20 +1,24 @@
-import { useState, useEffect } from 'react';
-import { useAuthContext } from './useAuthContext';
+import { useState } from 'react';
 import { projectAuth } from '../firebaseConfig';
+import { useAuthContext } from './useAuthContext';
 
-export const useSignin = () => {
+export const useLogout = () => {
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const { dispatch } = useAuthContext();
 
-  const signin = async (email, password) => {
+  const logout = async () => {
     setError(null);
     setIsPending(true);
 
     try {
-      const res = await projectAuth.signInWithEmailAndPassword(email, password);
-      console.log(res.user);
-      await dispatch({ type: 'LOGIN' });
+      // sign the user out
+      await projectAuth.signOut();
+
+      // dispatch logout action
+      await dispatch({ type: 'LOGOUT' });
+
+      // update state
       setError(null);
       setIsPending(false);
     } catch (error) {
@@ -23,5 +27,5 @@ export const useSignin = () => {
     }
   };
 
-  return { error, isPending, signin };
+  return { error, isPending, logout };
 };

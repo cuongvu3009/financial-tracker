@@ -1,9 +1,7 @@
-// Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyBmcJAXF3K3grKgY9WhLscTQNdOlO8Gotk',
   authDomain: 'financial-tracker-4716c.firebaseapp.com',
@@ -17,7 +15,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 //	Init service
-const projectFirestore = firebase.firestore();
+const proectFirestore = firebase.firestore();
 const projectAuth = firebase.auth();
 
-export { projectFirestore, projectAuth };
+export { projectAuth, proectFirestore };
