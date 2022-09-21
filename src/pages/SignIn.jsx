@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { useSignin } from '../hooks/useSignin';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [success, setSuccess] = useState(false);
   const { signin, error, isPending } = useSignin();
   const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    try {
+    if (!error && email && password) {
       signin(email, password);
       dispatch({ type: 'LOGIN' });
       setEmail('');
       setPassword('');
-    } catch (error) {
-      console.log(error);
+      setSuccess(true);
+      navigate('/');
     }
   };
 
@@ -43,7 +45,8 @@ const SignIn = () => {
         {!isPending && <Button type='submit'>Login</Button>}
         {isPending && <Button disabled>Loading...</Button>}
       </Form>
-      {error && <p>{error}</p>}
+      {error && <Error>{error}</Error>}
+      {success && <Success>Login successfully!</Success>}
       <p>
         Not a member yet? <Link to='/signup'>Sign Up</Link>
       </p>
@@ -72,3 +75,15 @@ const Form = styled.form`
 `;
 
 const Button = styled.button``;
+
+const Error = styled.p`
+  color: white;
+  background-color: red;
+  padding: 10px;
+`;
+
+const Success = styled.p`
+  color: white;
+  background-color: green;
+  padding: 10px;
+`;

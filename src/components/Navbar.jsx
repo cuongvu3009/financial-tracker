@@ -16,7 +16,7 @@ const Navbar = () => {
       <Right>
         {user && (
           <>
-            <h4>{user.displayName.toLocaleUpperCase()}</h4>
+            <h4>{user?.displayName.toUpperCase()}</h4>
             <Link onClick={logout} className='styledLink'>
               <Button>Log Out</Button>
             </Link>
