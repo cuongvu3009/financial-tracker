@@ -2,13 +2,16 @@ import React from 'react';
 import Lists from '../components/Lists';
 import Form from '../components/Form';
 import styled from 'styled-components';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const Home = () => {
+  const { user } = useAuthContext();
+
   return (
     <div>
       <Main>
         <Lists />
-        <Form />
+        <Form uid={user.uid} />
       </Main>
     </div>
   );

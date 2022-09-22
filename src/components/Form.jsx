@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useFirestore } from '../hooks/useFirestore';
 
-const Form = () => {
+const Form = ({ uid }) => {
+  const [name, setName] = useState('');
+  const [amount, setAmount] = useState('');
+  const { addDocument, response } = useFirestore('transactions');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addDocument({ uid, name, amount });
+    setName('');
+    setAmount('');
+  };
+
   return (
     <div>
       <h2>Add transaction</h2>
-      <FormContainer action=''>
+      <FormContainer onSubmit={handleSubmit}>
         <label htmlFor=''>Transaction name:</label>
-        <input type='text' />
+        <input
+          type='text'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
         <label htmlFor=''>Amount ($):</label>
-        <input type='number' />
-        <button>Add transaction</button>
+        <input
+          type='number'
+          value={amount}
+          required
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <button type='submit'>Add transaction</button>
       </FormContainer>
     </div>
   );

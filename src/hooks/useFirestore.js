@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer } from 'react';
-import { projectFirestore } from '../firebaseConfig';
+import { projectFirestore, timestamp } from '../firebaseConfig';
 
 let initialState = {
   document: null,
@@ -11,7 +11,7 @@ let initialState = {
 const firestoreReducer = (state, action) => {
   switch (action.type) {
     case 'IS_PENDING':
-      return { ...state, isPending: true };
+      return { success: false, isPending: true, error: null, document: null };
     case 'ADDED_DOCUMENT':
       return {
         isPending: false,
@@ -33,28 +33,39 @@ const firestoreReducer = (state, action) => {
 
 export const useFirestore = (collection) => {
   const [response, dispatch] = useReducer(firestoreReducer, initialState);
-  const [cancelled, setIsCancelled] = useState(false);
+  const [isCancelled, setIsCancelled] = useState(false);
 
   //	document ref
   const ref = projectFirestore.collection(collection);
 
   //	dispatch if not cancelled
   const dispatchIfNotCancelled = (action) => {
-    if (!cancelled) {
+    if (!isCancelled) {
       dispatch(action);
     }
   };
 
-  //	add document
+  // add a document
   const addDocument = async (doc) => {
     dispatch({ type: 'IS_PENDING' });
 
     try {
-      const addedDocument = ref.add(doc);
+      const createdAt = timestamp.fromDate(new Date());
+      const addedDocument = await ref.add({ ...doc, createdAt });
       dispatchIfNotCancelled({
         type: 'ADDED_DOCUMENT',
         payload: addedDocument,
       });
+    } catch (err) {
+      dispatchIfNotCancelled({ type: 'ERROR', payload: err.message });
+    }
+  };
+
+  //	delete document
+  const deleteDocument = async (id) => {
+    dispatch({ type: 'IS_PENDING' });
+    try {
+      await ref.doc(id).delete();
     } catch (error) {
       dispatchIfNotCancelled({ type: 'ERROR', payload: error.message });
     }
@@ -64,5 +75,5 @@ export const useFirestore = (collection) => {
     return () => setIsCancelled(true);
   }, []);
 
-  return { addDocument, response, dispatch };
+  return { addDocument, deleteDocument, response };
 };
