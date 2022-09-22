@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { projectFirestore } from '../firebaseConfig';
 
 export const useCollection = (collection) => {
-  const [document, setDocument] = useState(null);
+  const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -12,11 +12,11 @@ export const useCollection = (collection) => {
       (snapshot) => {
         let results = [];
         snapshot.docs.forEach((doc) => {
-          results.push({ ...doc.data, id: doc.id });
+          results.push({ ...doc.data(), id: doc.id });
         });
 
         //	update state
-        setDocument(results);
+        setDocuments(results);
         setError(null);
       },
       (error) => {
@@ -29,5 +29,5 @@ export const useCollection = (collection) => {
     return () => unsubcribe();
   }, [collection]);
 
-  return { document, error };
+  return { documents, error };
 };

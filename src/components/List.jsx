@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const List = () => {
+const List = ({ amount, name, uid }) => {
   return (
     <Wrapper>
       <Button>x</Button>
-      <h3>Mushroom</h3>
-      <h3>$20</h3>
+      <h3>{name}</h3>
+      <h3>${amount}</h3>
     </Wrapper>
   );
 };

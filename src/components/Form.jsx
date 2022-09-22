@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useFirestore } from '../hooks/useFirestore';
 
 const Form = ({ uid }) => {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
-  const { addDocument, response } = useFirestore('transactions');
+  const { addDocument } = useFirestore('transactions');
 
   const handleSubmit = (e) => {
     e.preventDefault();

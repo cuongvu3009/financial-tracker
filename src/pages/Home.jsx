@@ -1,16 +1,25 @@
 import React from 'react';
-import Lists from '../components/Lists';
+import List from '../components/List';
 import Form from '../components/Form';
 import styled from 'styled-components';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { useCollection } from '../hooks/useCollection';
 
 const Home = () => {
   const { user } = useAuthContext();
+  const { documents, error } = useCollection('transactions');
+
+  console.log(documents);
 
   return (
     <div>
       <Main>
-        <Lists />
+        {error && <p>{error}</p>}
+        <Lists>
+          {documents.map((doc) => (
+            <List key={doc.id} {...doc} />
+          ))}
+        </Lists>
         <Form uid={user.uid} />
       </Main>
     </div>
@@ -26,4 +35,10 @@ const Main = styled.main`
   padding-top: 10vh;
   width: 50%;
   margin: 0 auto;
+`;
+
+const Lists = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 `;
