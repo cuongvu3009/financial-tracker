@@ -7,18 +7,17 @@ import { useCollection } from '../hooks/useCollection';
 
 const Home = () => {
   const { user } = useAuthContext();
-  const { documents, error } = useCollection('transactions', [
-    'uid',
-    '==',
-    user.uid,
-  ]);
+  const { documents, error } = useCollection(
+    'transactions',
+    ['uid', '==', user.uid],
+    ['createdAt', 'desc']
+  );
 
   return (
     <div>
       <Main>
         {error && <p>{error}</p>}
         <Lists>
-          {documents.length < 1 && <p>No transaction to show</p>}
           {documents.map((doc) => (
             <List key={doc.id} {...doc} />
           ))}
