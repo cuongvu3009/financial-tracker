@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useFirestore } from '../hooks/useFirestore';
 
-const List = ({ amount, name, uid }) => {
+const List = ({ amount, name, id }) => {
+  const { deleteDocument } = useFirestore('transactions');
+
   return (
     <Wrapper>
-      <Button>x</Button>
+      <Button onClick={() => deleteDocument(id)}>x</Button>
       <h3>{name}</h3>
       <h3>${amount}</h3>
     </Wrapper>
